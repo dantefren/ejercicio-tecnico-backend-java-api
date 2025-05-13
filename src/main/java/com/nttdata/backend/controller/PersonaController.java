@@ -2,8 +2,11 @@ package com.nttdata.backend.controller;
 
 import com.nttdata.backend.service.PersonaService;
 import com.nttdata.backend.model.Persona;
+import com.nttdata.backend.model.PersonaCuenta;
 import com.nttdata.backend.exception.ServiceException;
 import com.nttdata.backend.common.Error;
+import com.nttdata.backend.common.ApiResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,32 +26,39 @@ public class PersonaController {
     }
 
     @PostMapping
-    public ResponseEntity<Persona> createPersona(@RequestBody Persona persona) {
+    public ResponseEntity<ApiResponse<Persona>> createPersona(@RequestBody Persona persona) {
         Persona newPersona = personaService.createPersona(persona);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newPersona);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(newPersona, null));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPersonaById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Persona>> getPersonaById(@PathVariable UUID id) {
         Optional<Persona> persona = personaService.getPersonaById(id);
-        return persona.map(ResponseEntity::ok)
+        return persona.map(p -> ResponseEntity.ok(new ApiResponse<>(p, null)))
                       .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
     }
 
+    @GetMapping("/cuentas/{id}")
+    public ResponseEntity<ApiResponse<PersonaCuenta>> getPersonaCuentaById(@PathVariable UUID id) {
+        Optional<PersonaCuenta> personaCuenta = personaService.getPersonaCuentaById(id);
+        return personaCuenta.map(pc -> ResponseEntity.ok(new ApiResponse<>(pc, null)))
+                            .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
+    }
+
     @GetMapping
-    public ResponseEntity<List<Persona>> getAllPersonas() {
-        return ResponseEntity.ok(personaService.getAllPersonas());
+    public ResponseEntity<ApiResponse<List<Persona>>> getAllPersonas() {
+        return ResponseEntity.ok(new ApiResponse<>(personaService.getAllPersonas(), null));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Persona> updatePersona(@PathVariable UUID id, @RequestBody Persona updatedPersona) {
+    public ResponseEntity<ApiResponse<Persona>> updatePersona(@PathVariable UUID id, @RequestBody Persona updatedPersona) {
         Persona personaUpdated = personaService.updatePersona(id, updatedPersona);
-        return ResponseEntity.ok(personaUpdated);
+        return ResponseEntity.ok(new ApiResponse<>(personaUpdated, null));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePersona(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deletePersona(@PathVariable UUID id) {
         personaService.deletePersona(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ApiResponse<>(null, null)); 
     }
 }

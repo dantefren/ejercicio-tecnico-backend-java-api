@@ -25,6 +25,10 @@ public class CuentaService {
         return cuentaRepository.save(cuenta);
     }
 
+    public Cuenta actualizarCuenta(Cuenta cuenta) {
+    return cuentaRepository.save(cuenta);
+}
+
     //DTACO: R
     public Optional<Cuenta> getCuentaById(UUID id) {
         return cuentaRepository.findById(id);
@@ -45,7 +49,7 @@ public class CuentaService {
         return cuentaRepository.findById(id).map(cuenta -> {
             cuenta.setNumerocuenta(updatedCuenta.getNumerocuenta());
             cuenta.setTipo(updatedCuenta.getTipo());
-            cuenta.setSaldoinicial(updatedCuenta.getSaldoinicial());
+            cuenta.setSaldo(updatedCuenta.getSaldo());
             cuenta.setEstado(updatedCuenta.getEstado());
             return cuentaRepository.save(cuenta);
         }).orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));

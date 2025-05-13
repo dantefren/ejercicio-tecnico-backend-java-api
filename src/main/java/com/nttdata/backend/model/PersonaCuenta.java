@@ -1,7 +1,9 @@
 package com.nttdata.backend.model;
 
+import java.util.List;
+
 public class PersonaCuenta {
 
     public Persona persona;
-    public Cuenta[] cuentas;
+    public List<Cuenta> cuentas;
 }

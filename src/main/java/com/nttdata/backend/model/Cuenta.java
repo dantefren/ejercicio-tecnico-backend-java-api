@@ -43,11 +43,16 @@ public class Cuenta {
     private String tipo;
 
     @NotNull
-    @Column(name = "saldoinicial", nullable = false, precision = 10, scale = 2)
-    private BigDecimal saldoinicial;
+    @Column(name = "saldo", nullable = false, precision = 10, scale = 2)
+    private BigDecimal saldo;
 
     @NotNull
     @Column(name = "estado", nullable = false)
     private Boolean estado;
+    
+    public void actualizarSaldo(BigDecimal monto) {
+        this.saldo = this.saldo.add(monto);
+    }
+
 
 }

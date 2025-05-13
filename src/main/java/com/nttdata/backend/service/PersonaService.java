@@ -1,6 +1,7 @@
 package com.nttdata.backend.service;
 import com.nttdata.backend.repository.CuentaRepository;
 import com.nttdata.backend.repository.PersonaRepository;
+import com.nttdata.backend.model.Cuenta;
 import com.nttdata.backend.model.Persona;
 import com.nttdata.backend.model.PersonaCuenta;
 import com.nttdata.backend.exception.ServiceException;
@@ -35,8 +36,20 @@ public class PersonaService {
 
     public Optional<PersonaCuenta> getPersonaCuentaById(UUID id) {
         PersonaCuenta respuesta = new PersonaCuenta();
-        respuesta.persona = personaRepository.findById(id).orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
-        respuesta.cuentas = cuentaRepository.findByIdpersona(respuesta.persona).orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO);
+    
+        // Buscar la persona
+        respuesta.persona = personaRepository.findById(id)
+                .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
+
+        // Buscar las cuentas asociadas a la persona
+        List<Cuenta> cuentas = cuentaRepository.findByIdpersona(respuesta.persona);
+        
+        // Validar si la lista de cuentas está vacía
+        if (cuentas.isEmpty()) {
+            throw new ServiceException(Error.RECURSO_NO_ENCONTRADO);
+        }
+        
+        respuesta.cuentas = cuentas;
 
         return Optional.of(respuesta);
     }
