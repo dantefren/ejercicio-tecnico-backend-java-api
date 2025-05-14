@@ -1,0 +1,5 @@
+#DTACO: Comandos e dockerización
+
+docker build -t ejercicio-tecnico-backend-java-api .
+docker run -p 8080:8080 ejercicio-tecnico-backend-java-api
+docker-compose up -d

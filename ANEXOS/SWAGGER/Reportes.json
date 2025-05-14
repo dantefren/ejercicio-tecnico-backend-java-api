@@ -1,0 +1,122 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Reportes",
+    "description": "ejercicio-técnico-backend-java",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/reportes": {
+      "get": {
+        "summary": "Obtener reporte de estado de cuenta",
+        "description": "Genera un reporte basado en el rango de fechas indicado.",
+        "operationId": "obtenerEstadoCuenta",
+        "parameters": [
+          {
+            "name": "fechaInicio",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Fecha de inicio en formato YYYY-MM-DD."
+          },
+          {
+            "name": "fechaFin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Fecha de fin en formato YYYY-MM-DD."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reporte generado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error en los parámetros de entrada"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ReporteEstadoCuenta"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ReporteEstadoCuenta": {
+        "type": "object",
+        "properties": {
+          "clienteId": {
+            "type": "string"
+          },
+          "cuentas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cuenta"
+            }
+          },
+          "movimientosPorCuenta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Movimiento"
+              }
+            }
+          }
+        }
+      },
+      "Cuenta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "saldo": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Movimiento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monto": {
+            "type": "number",
+            "format": "double"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Movimientos",
+    "description": "ejercicio-técnico-backend-java",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/movimientos/createMovimiento": {
+      "post": {
+        "summary": "Crear un movimiento",
+        "description": "Registra un nuevo movimiento en el sistema.",
+        "operationId": "createMovimiento",
+        "requestBody": {
+          "description": "Datos del movimiento",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Movimiento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Movimiento creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movimientos": {
+      "post": {
+        "summary": "Registrar un movimiento en una cuenta",
+        "description": "Registra un movimiento financiero en la cuenta especificada.",
+        "operationId": "registrarMovimiento",
+        "parameters": [
+          {
+            "name": "idcuenta",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "monto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "bigdecimal"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Movimiento registrado exitosamente"
+          }
+        }
+      },
+      "get": {
+        "summary": "Obtener todos los movimientos",
+        "description": "Devuelve la lista de todos los movimientos registrados.",
+        "operationId": "getAllMovimientos",
+        "responses": {
+          "200": {
+            "description": "Lista de movimientos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movimientos/{id}": {
+      "get": {
+        "summary": "Obtener un movimiento por ID",
+        "description": "Devuelve la información de un movimiento específico.",
+        "operationId": "getMovimientoById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Información del movimiento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Movimiento no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un movimiento",
+        "description": "Actualiza los datos de un movimiento específico.",
+        "operationId": "updateMovimiento",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Datos actualizados del movimiento",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Movimiento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Movimiento actualizado exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un movimiento",
+        "description": "Elimina un movimiento de la base de datos.",
+        "operationId": "deleteMovimiento",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movimiento eliminado exitosamente"
+          }
+        }
+      }
+    },
+    "/movimientos/cuenta/{idCuenta}": {
+      "get": {
+        "summary": "Obtener movimientos por cuenta",
+        "description": "Devuelve los movimientos asociados a una cuenta específica.",
+        "operationId": "getMovimientosByCuenta",
+        "parameters": [
+          {
+            "name": "idCuenta",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de movimientos de la cuenta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Movimiento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "idcuenta": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monto": {
+            "type": "number",
+            "format": "bigdecimal"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

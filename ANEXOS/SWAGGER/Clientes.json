@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: API de Clientes
+  description: ejercicio-técnico-backend-java
+  version: 1.0.0
+paths:
+  /clientes:
+    post:
+      summary: Crear un nuevo cliente
+      description: Registra un nuevo cliente en la base de datos.
+      operationId: createCliente
+      requestBody:
+        description: Datos del nuevo cliente
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+      responses:
+        '201':
+          description: Cliente creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    get:
+      summary: Obtener todos los clientes
+      description: Devuelve la lista de todos los clientes registrados.
+      operationId: getAllClientes
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /clientes/{id}:
+    get:
+      summary: Obtener un cliente por ID
+      description: Devuelve la información de un cliente específico.
+      operationId: getClienteById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Información del cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Cliente no encontrado
+    delete:
+      summary: Eliminar un cliente
+      description: Elimina un cliente de la base de datos.
+      operationId: deleteCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Cliente eliminado
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        correo:
+          type: string
+          format: email
+    ApiResponse:
+      type: object
+      properties:
+        data:
+          type: object
+        error:
+          type: string

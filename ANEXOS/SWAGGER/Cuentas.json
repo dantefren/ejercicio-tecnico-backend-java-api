@@ -1,0 +1,174 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Cuentas",
+    "description": "ejercicio-técnico-backend-java",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/cuentas": {
+      "post": {
+        "summary": "Crear una nueva cuenta",
+        "description": "Registra una nueva cuenta en la base de datos.",
+        "operationId": "createCuenta",
+        "requestBody": {
+          "description": "Datos de la nueva cuenta",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cuenta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cuenta creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Obtener todas las cuentas",
+        "description": "Devuelve la lista de todas las cuentas registradas.",
+        "operationId": "getAllCuentas",
+        "responses": {
+          "200": {
+            "description": "Lista de cuentas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cuentas/{id}": {
+      "get": {
+        "summary": "Obtener una cuenta por ID",
+        "description": "Devuelve la información de una cuenta específica.",
+        "operationId": "getCuentaById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Información de la cuenta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cuenta no encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar una cuenta",
+        "description": "Actualiza los datos de una cuenta específica.",
+        "operationId": "updateCuenta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Datos actualizados de la cuenta",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cuenta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cuenta actualizada exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una cuenta",
+        "description": "Elimina una cuenta de la base de datos.",
+        "operationId": "deleteCuenta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cuenta eliminada exitosamente"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Cuenta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "numeroCuenta": {
+            "type": "string"
+          },
+          "saldo": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
