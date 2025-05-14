@@ -1,14 +1,22 @@
-# Usar imagen base de OpenJDK
-FROM openjdk:17-jdk-slim
-
-# Establecer directorio de trabajo dentro del contenedor
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
-
-# Copiar el archivo JAR de la aplicación
-COPY target/ejercicio-tecnico-backend-java-api.jar app.jar
-
-# Exponer el puerto en el que corre la aplicación
+ 
+COPY .mvn/ .mvn/
+COPY mvnw .
+COPY pom.xml .
+RUN chmod +x mvnw && ./mvnw -B -q dependency:go-offline
+ 
+COPY src ./src
+ 
+RUN ./mvnw -B -q package -DskipTests
+ 
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+ 
+COPY --from=build /app/target/*.jar app.jar
+ 
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ 
+CMD ["java", "-jar", "app.jar"]
+ 
