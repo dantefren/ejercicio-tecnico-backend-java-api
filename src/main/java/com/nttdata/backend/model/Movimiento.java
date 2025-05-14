@@ -27,7 +27,7 @@ public class Movimiento {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "idcuenta", nullable = false)
     private Cuenta idcuenta;
@@ -54,8 +54,8 @@ public class Movimiento {
         this.fecha = Instant.now();
     }
 
-    public Movimiento(Cuenta cuenta, TipoMovimiento tipo, BigDecimal valor, BigDecimal saldoAnterior) {
-        this.idcuenta = cuenta;
+    public Movimiento(Cuenta idcuenta, TipoMovimiento tipo, BigDecimal valor, BigDecimal saldoAnterior) {
+        this.idcuenta = idcuenta;
         this.tipo = tipo;
         this.valor = valor != null ? valor : BigDecimal.ZERO;
         var iSaldoAnterior = saldoAnterior != null ? saldoAnterior : BigDecimal.ZERO;

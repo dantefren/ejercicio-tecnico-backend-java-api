@@ -25,11 +25,11 @@ public class MovimientoController {
         this.movimientoService = movimientoService;
     }
 
-    // @PostMapping
-    // public ResponseEntity<ApiResponse<Movimiento>> createMovimiento(@RequestBody Movimiento movimiento) {
-    //     Movimiento newMovimiento = movimientoService.createMovimiento(movimiento);
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(newMovimiento, null));
-    // }
+    @PostMapping("/createMovimiento")
+    public ResponseEntity<ApiResponse<Movimiento>> createMovimiento(@RequestBody Movimiento movimiento) {
+        Movimiento newMovimiento = movimientoService.createMovimiento(movimiento);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(newMovimiento, null));
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<Movimiento>> registrarMovimiento(@RequestParam UUID idcuenta, @RequestParam BigDecimal monto) {

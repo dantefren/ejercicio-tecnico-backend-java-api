@@ -58,28 +58,28 @@ public class MovimientoService {
 
         
     @Transactional
-public Movimiento registrarMovimiento(UUID idcuenta, BigDecimal monto) {
-    Cuenta cuenta = cuentaService.getCuentaById(idcuenta)
-        .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
+    public Movimiento registrarMovimiento(UUID idcuenta, BigDecimal monto) {
+        Cuenta cuenta = cuentaService.getCuentaById(idcuenta)
+            .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
 
-    // 📌 Validar que haya saldo disponible antes de procesar el retiro
-    if (monto.compareTo(BigDecimal.ZERO) < 0 && cuenta.getSaldo().compareTo(monto.abs()) < 0) {
-        throw new ServiceException(Error.SALDO_NO_DISPONIBLE);
+        //DTACO: Validar que haya saldo disponible antes de procesar el retiro
+        if (monto.compareTo(BigDecimal.ZERO) < 0 && cuenta.getSaldo().compareTo(monto.abs()) < 0) {
+            throw new ServiceException(Error.SALDO_NO_DISPONIBLE);
+        }
+
+        BigDecimal saldoAnterior = cuenta.getSaldo();
+        cuenta.actualizarSaldo(monto);
+        cuenta = cuentaService.actualizarCuenta(cuenta);
+
+        Movimiento movimiento = new Movimiento(cuenta, 
+            monto.compareTo(BigDecimal.ZERO) > 0 ? TipoMovimiento.DEPOSITO : TipoMovimiento.RETIRO,
+            monto, saldoAnterior);
+
+        movimiento.setId(UUID.randomUUID());
+        movimiento.setFecha(Instant.now());
+
+        return movimientoRepository.save(movimiento);
     }
-
-    BigDecimal saldoAnterior = cuenta.getSaldo();
-    cuenta.actualizarSaldo(monto);
-    cuenta = cuentaService.actualizarCuenta(cuenta);
-
-    Movimiento movimiento = new Movimiento(cuenta, 
-        monto.compareTo(BigDecimal.ZERO) > 0 ? TipoMovimiento.DEPOSITO : TipoMovimiento.RETIRO,
-        monto, saldoAnterior);
-
-    movimiento.setId(UUID.randomUUID());
-    movimiento.setFecha(Instant.now());
-
-    return movimientoRepository.save(movimiento);
-}
 
 
     //DTACO: D

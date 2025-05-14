@@ -10,7 +10,9 @@ public enum Error {
     RECURSO_NO_ENCONTRADO("404", "Recurso no encontrado"),
     HA_OCURRIDO_UN_ERROR_INESPERADO("500", "Ocurrió un error inesperado en el sistema"),
     CONFLICTO_CONCURRENCIA ("001", "Error de Concurrencia"),
-    SALDO_NO_DISPONIBLE ("002","Saldo no disponible");
+    SALDO_NO_DISPONIBLE ("002","Saldo no disponible"),
+    GENERADOR_CORRECTAMENTE ("003","Reporte generado correctamente"),
+    ;
 
 
     private final String code;
