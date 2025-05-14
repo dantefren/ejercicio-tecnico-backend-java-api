@@ -26,6 +26,7 @@ public class PersonaService {
 
     //DTACO: C
     public Persona createPersona(Persona persona) {
+        persona.setId(UUID.randomUUID());
         return personaRepository.save(persona);
     }
 

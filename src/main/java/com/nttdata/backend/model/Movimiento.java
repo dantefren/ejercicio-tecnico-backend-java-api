@@ -22,6 +22,7 @@ import java.util.UUID;
 })
 public class Movimiento {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -48,26 +49,17 @@ public class Movimiento {
     @Column(name = "fecha")
     private Instant fecha;
 
-    //DTACO: Campos adicionales para el movimiento (no afectan la BD)
-    @Transient
-    private BigDecimal saldoAnterior;
-
-    @Transient
-    private BigDecimal saldoActual;
-
     public Movimiento() {
         this.id = UUID.randomUUID();
         this.fecha = Instant.now();
     }
 
     public Movimiento(Cuenta cuenta, TipoMovimiento tipo, BigDecimal valor, BigDecimal saldoAnterior) {
-        this.id = UUID.randomUUID();
         this.idcuenta = cuenta;
         this.tipo = tipo;
         this.valor = valor != null ? valor : BigDecimal.ZERO;
-        this.saldoAnterior = saldoAnterior != null ? saldoAnterior : BigDecimal.ZERO;
-        this.saldoActual = this.saldoAnterior.add(this.valor);
-        this.saldo = this.saldoActual;
-        this.fecha = Instant.now();
+        var iSaldoAnterior = saldoAnterior != null ? saldoAnterior : BigDecimal.ZERO;
+        var iSaldoActual = iSaldoAnterior.add(this.valor);
+        this.saldo = iSaldoActual;
     }
 }

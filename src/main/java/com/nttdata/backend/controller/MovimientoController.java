@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,15 +25,15 @@ public class MovimientoController {
         this.movimientoService = movimientoService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Movimiento>> createMovimiento(@RequestBody Movimiento movimiento) {
-        Movimiento newMovimiento = movimientoService.createMovimiento(movimiento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(newMovimiento, null));
-    }
+    // @PostMapping
+    // public ResponseEntity<ApiResponse<Movimiento>> createMovimiento(@RequestBody Movimiento movimiento) {
+    //     Movimiento newMovimiento = movimientoService.createMovimiento(movimiento);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(newMovimiento, null));
+    // }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Movimiento>> registrarMovimiento(@RequestParam UUID idCuenta, @RequestParam double monto) {
-        Movimiento movimiento = movimientoService.registrarMovimiento(idCuenta, monto);
+    public ResponseEntity<ApiResponse<Movimiento>> registrarMovimiento(@RequestParam UUID idcuenta, @RequestParam BigDecimal monto) {
+        Movimiento movimiento = movimientoService.registrarMovimiento(idcuenta, monto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(movimiento));
     }
 

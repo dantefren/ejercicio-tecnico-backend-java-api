@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,21 +28,6 @@ public class MovimientoService {
 
     //DTACO: C
     public Movimiento createMovimiento(Movimiento movimiento) {
-        return movimientoRepository.save(movimiento);
-    }
-
-    
-
-    public Movimiento registrarMovimiento(UUID idCuenta, BigDecimal monto) {
-        Cuenta cuenta = cuentaService.getCuentaById(idCuenta)
-                .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
-
-        BigDecimal saldoAnterior = cuenta.getSaldo();
-        cuenta.actualizarSaldo(monto);
-
-        cuenta = cuentaService.actualizarCuenta(cuenta);
-
-        Movimiento movimiento = new Movimiento(cuenta, monto.compareTo(BigDecimal.ZERO) > 0? TipoMovimiento.DEPOSITO: TipoMovimiento.RETIRO ,monto, saldoAnterior);
         return movimientoRepository.save(movimiento);
     }
 
@@ -70,9 +56,36 @@ public class MovimientoService {
         }).orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
     }
 
+        
+    @Transactional
+public Movimiento registrarMovimiento(UUID idcuenta, BigDecimal monto) {
+    Cuenta cuenta = cuentaService.getCuentaById(idcuenta)
+        .orElseThrow(() -> new ServiceException(Error.RECURSO_NO_ENCONTRADO));
+
+    // 📌 Validar que haya saldo disponible antes de procesar el retiro
+    if (monto.compareTo(BigDecimal.ZERO) < 0 && cuenta.getSaldo().compareTo(monto.abs()) < 0) {
+        throw new ServiceException(Error.SALDO_NO_DISPONIBLE);
+    }
+
+    BigDecimal saldoAnterior = cuenta.getSaldo();
+    cuenta.actualizarSaldo(monto);
+    cuenta = cuentaService.actualizarCuenta(cuenta);
+
+    Movimiento movimiento = new Movimiento(cuenta, 
+        monto.compareTo(BigDecimal.ZERO) > 0 ? TipoMovimiento.DEPOSITO : TipoMovimiento.RETIRO,
+        monto, saldoAnterior);
+
+    movimiento.setId(UUID.randomUUID());
+    movimiento.setFecha(Instant.now());
+
+    return movimientoRepository.save(movimiento);
+}
+
+
     //DTACO: D
     @Transactional
     public void deleteMovimiento(UUID id) {
         movimientoRepository.deleteById(id);
     }
+    
 }
